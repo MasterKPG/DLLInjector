@@ -39,7 +39,7 @@ If you'd like to build it yourself:
 
 1. Clone this repo:
    ```bash
-   git clone https://github.com/your-username/DLL-Injector.git
+   git clone https://github.com/masterkpg/DLL-Injector.git
    ```
 2. Open the solution/project in your preferred IDE (Visual Studio recommended).
 3. Build the project and run.
