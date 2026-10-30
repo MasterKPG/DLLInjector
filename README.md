@@ -1,65 +1,97 @@
 # 🔧 DLL Injector
 
-A simple and lightweight DLL Injector for Windows, designed to inject dynamic-link libraries into target processes for debugging, modding, or reverse engineering purposes.
+A fast, lightweight DLL injector for Windows with a modern native GUI. Built in
+C++ with the Win32 API — **no runtime, no dependencies, a single portable
+`.exe`** that launches instantly.
 
-> ⚠️ This tool is intended for **educational** and **legitimate** use only. Misuse may violate software terms of service or local laws.
+> ⚠️ For **educational** and **legitimate** use only (debugging, modding,
+> instrumentation of software you own or are authorized to modify). You are
+> responsible for complying with applicable terms of service and laws.
 
 ---
 
 ## ✨ Features
 
-- Manual DLL path selection
-- Process name or PID targeting
-- Injection status messages
-- Supports both x86 and x64 processes
-- Lightweight and portable
+- **Live process browser** — every running process with its PID and
+  architecture, filterable by name or PID as you type.
+- **Architecture safety** — reads the DLL's PE header and the target's
+  architecture and blocks mismatched `x86`/`x64` injections before they fail
+  silently (the single most common cause of "nothing happened").
+- **Classic injection** — `VirtualAllocEx` → `WriteProcessMemory` →
+  `CreateRemoteThread(LoadLibraryW)`, with Unicode paths, least-privilege
+  handles and `SeDebugPrivilege`.
+- **Responsive UI** — injection runs off the UI thread; clear success/error
+  feedback for every action with precise Win32 error messages.
+- **Modern dark interface** — DPI-aware, dark title bar, one accent colour,
+  designed button states.
+- Builds for both **x64** and **x86**.
 
 ---
 
 ## 🚀 Getting Started
 
-### ✅ Requirements
+### Requirements
 
-- Windows 7 or later
-- .NET Framework
-- Administrator privileges
+- Windows 10 or later (64-bit or 32-bit)
+- Administrator privileges (to open other processes)
 
-### 🔨 How to Use
+### How to use
 
-1. Launch the injector as Administrator.
-2. Write the DLL file absolute path.
-3. Write the PID of the targeted program.
-4. Hit **Enter** and watch the magic happen ✨
+1. Launch `DLLInjector.exe` (it requests elevation automatically).
+2. Pick the target in the process list — type to filter.
+3. **Browse…** to a DLL, or paste its full path. The hint line confirms the DLL
+   matches the target's architecture.
+4. Click **Inject DLL** (or double-click the process). The status line reports
+   the result.
+
+> Inject an **x86** DLL into an **x86** process, and an **x64** DLL into an
+> **x64** process. The injector warns you on a mismatch.
 
 ---
 
 ## 🛠️ Build from Source
 
-If you'd like to build it yourself:
+**Requirements:** Visual Studio 2022 with the *Desktop development with C++*
+workload (MSVC v143, Windows 10/11 SDK).
 
-1. Clone this repo:
-   ```bash
-   git clone https://github.com/masterkpg/DLLInjector.git
-   ```
-2. Open the solution/project in your preferred IDE (Visual Studio recommended).
-3. Build the project and run.
+```bash
+git clone https://github.com/masterkpg/DLLInjector.git
+```
+
+- **Visual Studio:** open `DLLinjector2.sln`, pick `Release` + `x64` (or `x86`),
+  and build (`Ctrl+Shift+B`).
+- **Command line:**
+  ```bash
+  msbuild DLLinjector2.sln /p:Configuration=Release /p:Platform=x64
+  ```
+
+Output: `x64/Release/DLLInjector.exe` (or `Release/DLLInjector.exe` for x86).
+
+### Project layout
+
+| Path               | Purpose                                             |
+| ------------------ | --------------------------------------------------- |
+| `src/Injector.h`   | Injection core API                                  |
+| `src/Injector.cpp` | Process enumeration, PE/arch detection, injection   |
+| `src/Main.cpp`     | Win32 GUI (dark theme, owner-drawn controls)        |
+| `src/app.manifest` | Elevation, per-monitor DPI, UTF-8                   |
 
 ---
 
 ## 📜 License
 
-This project is licensed under the [MIT License](LICENSE).
+Licensed under the [MIT License](LICENSE).
 
 ---
 
 ## 🙌 Credits
 
-Developed by MasterKPG.
-
-Feel free to contribute or fork the project for your own use!
+Developed by **MasterKPG**. Contributions and forks welcome.
 
 ---
 
 ## ⚠️ Disclaimer
 
-This tool is provided **as-is**. The author is **not responsible** for any damage or misuse caused by this software. Always ensure you have proper authorization before injecting DLLs into any process.
+Provided **as-is**, without warranty. The author is **not responsible** for any
+damage or misuse. Always ensure you have proper authorization before injecting
+into any process.
